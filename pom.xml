@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mongodb</groupId>
-    <artifactId>java-spring-boot-mongodb-starter</artifactId>
+    <artifactId>spring-boot-mongodb</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>java-spring-boot-mongodb-starter</name>
+    <name>spring-boot-mongodb</name>
 
     <description>Quick start project</description>
     <parent>
