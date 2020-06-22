@@ -1,6 +1,8 @@
 package com.mongodb.starter.controllers;
 
+import com.mongodb.starter.models.Customer;
 import com.mongodb.starter.models.Person;
+import com.mongodb.starter.repositories.CustomerRepository;
 import com.mongodb.starter.repositories.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,51 +16,56 @@ import static java.util.Arrays.asList;
 
 @RestController
 @RequestMapping("/api")
-public class PersonController {
+public class CustomerController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PersonController.class);
-    private final PersonRepository personRepository;
+    private final static Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
+    private final CustomerRepository customerRepository;
 
-    public PersonController(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    public CustomerController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
-    /*@PostMapping("person")
+    @PostMapping("customer")
     @ResponseStatus(HttpStatus.CREATED)
-    public Person postPerson(@RequestBody Person person) {
-        return personRepository.save(person);
+    public Customer addCustomer(@RequestBody Customer customer) {
+        LOGGER.debug("In addCustomer() POST Mapping");
+        return customerRepository.addCustomer(customer);
     }
 
-    @PostMapping("persons")
+    @PostMapping("customers")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Person> postPersons(@RequestBody List<Person> persons) {
-        return personRepository.saveAll(persons);
+    public List<Customer> addCustomers(@RequestBody List<Customer> customers) {
+        LOGGER.debug("In addCustomers() POST Mapping");
+        return customerRepository.addCustomers(customers);
     }
 
-    @GetMapping("persons")
-    public List<Person> getPersons() {
-        return personRepository.findAll();
+    @GetMapping("customer")
+    public List<Customer> getAllCustomers() {
+        LOGGER.debug("In getAllCustomers() GET Mapping");
+        return customerRepository.findAllCustomers();
     }
 
-    @GetMapping("person/{id}")
-    public ResponseEntity<Person> getPerson(@PathVariable String id) {
-        LOGGER.debug("GET by Id: {}", id);
-        Person person = personRepository.findOne(id);
-        if (person == null)
+    @GetMapping("customer/{id}")
+    public ResponseEntity<Customer> getCustomer(@PathVariable String id) {
+        LOGGER.debug("In getCustomer() - GET by Id Mapping: {}", id);
+        Customer customer = customerRepository.getCustomer(id);
+        if (customer == null)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(person);
+        return ResponseEntity.ok(customer);
     }
 
-    @GetMapping("persons/{ids}")
-    public List<Person> getPersons(@PathVariable String ids) {
+    // comma separated ids: http://localhost:8080/api/persons/5ef0c596708b5528a9b2209e%2C5ef0c596708b5528a9b2209f
+    @GetMapping("customers/{ids}")
+    public List<Customer> getCustomers(@PathVariable String ids) {
         List<String> listIds = asList(ids.split(","));
-        return personRepository.findAll(listIds);
+        return customerRepository.getCustomers(listIds);
     }
 
-    @GetMapping("persons/count")
+    @GetMapping("customer/count")
     public Long getCount() {
-        return personRepository.count();
+        return customerRepository.count();
     }
+    /*
 
     @DeleteMapping("person/{id}")
     public Long deletePerson(@PathVariable String id) {
@@ -89,12 +96,13 @@ public class PersonController {
     @GetMapping("persons/averageAge")
     public Double averageAge() {
         return personRepository.getAverageAge();
-    }*/
+    }
+    */
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public final Exception handleAllExceptions(RuntimeException e) {
-        LOGGER.error("Internal server error..", e);
+        LOGGER.error("Internal server error.", e);
         return e;
     }
 }
