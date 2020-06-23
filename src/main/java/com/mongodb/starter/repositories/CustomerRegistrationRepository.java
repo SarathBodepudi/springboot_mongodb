@@ -8,6 +8,7 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.starter.models.Customer;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,21 @@ public class CustomerRegistrationRepository implements CustomerRepository {
                                                                            .build();
     @Autowired
     private MongoClient client;
-    private MongoCollection<Customer> personCollection;
+    private MongoCollection<Customer> customerCollection;
 
     @PostConstruct
     void init() {
-        personCollection = client.getDatabase("customer").getCollection("customers", Customer.class);
+        customerCollection = client.getDatabase("customer").getCollection("customers", Customer.class);
     }
 
     @Override
     public Customer addCustomer(Customer customer)  {
         LOGGER.debug("In addCustomer() with customer :\n{}", customer);
+
+        customer.setId(new ObjectId());
+
+        customerCollection.insertOne(customer);
+
         return customer;
     }
 
